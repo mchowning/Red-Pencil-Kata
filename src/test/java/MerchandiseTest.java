@@ -6,7 +6,8 @@ import static org.junit.Assert.assertFalse;
 
 public class MerchandiseTest {
 
-    private static final int INITIAL_PRICE = 100;
+    private static final double INITIAL_PRICE = 100;
+    private static final double DOUBLE_TEST_DELTA = 0.001;
 
     private Merchandise subject;
 
@@ -17,7 +18,7 @@ public class MerchandiseTest {
 
     @Test
     public void initializedPriceIsReturned() {
-        assertEquals(INITIAL_PRICE, subject.getPrice());
+        assertEquals(INITIAL_PRICE, subject.getPrice(), DOUBLE_TEST_DELTA);
     }
 
     @Test
@@ -29,7 +30,7 @@ public class MerchandiseTest {
     @Test
     public void canUpdatePrice() {
         subject.setPrice(95);
-        assertEquals(95, subject.getPrice());
+        assertEquals(95, subject.getPrice(), DOUBLE_TEST_DELTA);
     }
 
     @Test

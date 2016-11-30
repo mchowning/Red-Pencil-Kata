@@ -1,12 +1,12 @@
 public class Merchandise {
 
-    private int price;
+    private double price;
 
-    public Merchandise(int price) {
+    public Merchandise(double price) {
         this.price = price;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
@@ -14,7 +14,7 @@ public class Merchandise {
         return false;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 }
