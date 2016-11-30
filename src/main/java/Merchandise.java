@@ -9,4 +9,8 @@ public class Merchandise {
     public int getPrice() {
         return price;
     }
+
+    public boolean isRedPencilPromotion() {
+        return true;
+    }
 }
