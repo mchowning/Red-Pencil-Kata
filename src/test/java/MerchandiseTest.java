@@ -1,20 +1,26 @@
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 public class MerchandiseTest {
 
+    private static final int INITIAL_PRICE = 100;
+
+    private Merchandise subject;
+
+    @Before
+    public void setUp() {
+        subject = new Merchandise(INITIAL_PRICE);
+    }
+
     @Test
-    public void initializeMerchandiseWithPrice() {
-        int inputPrice = 100;
-        Merchandise merchandise = new Merchandise(inputPrice);
-        int outputPrice = merchandise.getPrice();
-        assertEquals(inputPrice, outputPrice);
+    public void initializedPriceIsReturned() {
+        assertEquals(INITIAL_PRICE, subject.getPrice());
     }
 
     @Test
     public void initializedPriceIsNotRedPencilPromotion() {
-        Merchandise merchandise = new Merchandise(100);
-        boolean isRedPencilPromotion = merchandise.isRedPencilPromotion();
+        boolean isRedPencilPromotion = subject.isRedPencilPromotion();
     }
 }
