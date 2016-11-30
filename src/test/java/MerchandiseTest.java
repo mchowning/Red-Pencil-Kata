@@ -11,4 +11,10 @@ public class MerchandiseTest {
         int outputPrice = merchandise.getPrice();
         assertEquals(inputPrice, outputPrice);
     }
+
+    @Test
+    public void initializedPriceIsNotRedPencilPromotion() {
+        Merchandise merchandise = new Merchandise(100);
+        boolean isRedPencilPromotion = merchandise.isRedPencilPromotion();
+    }
 }
