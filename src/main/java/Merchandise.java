@@ -1,10 +1,12 @@
 public class Merchandise {
 
-    public Merchandise(int price) {
+    private int price;
 
+    public Merchandise(int price) {
+        this.price = price;
     }
 
     public int getPrice() {
-        return 0;
+        return price;
     }
 }
