@@ -25,4 +25,9 @@ public class MerchandiseTest {
         boolean isRedPencilPromotion = subject.isRedPencilPromotion();
         assertFalse(isRedPencilPromotion);
     }
+
+    @Test
+    public void canUpdatePrice() {
+        subject.setPrice(95);
+    }
 }
