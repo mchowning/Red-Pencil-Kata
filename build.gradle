@@ -1,0 +1,15 @@
+apply plugin: 'java'
+
+repositories {
+    jcenter()
+}
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+    }
+}
+
+dependencies {
+    testCompile 'junit:junit:4.12'
+}
