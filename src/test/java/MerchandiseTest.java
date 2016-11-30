@@ -4,6 +4,7 @@ public class MerchandiseTest {
 
     @Test
     public void initializeMerchandiseWithPrice() {
-        new Merchandise(100);
+        Merchandise merchandise = new Merchandise(100);
+        int price = merchandise.getPrice();
     }
 }
