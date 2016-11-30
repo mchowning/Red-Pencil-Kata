@@ -13,4 +13,8 @@ public class Merchandise {
     public boolean isRedPencilPromotion() {
         return false;
     }
+
+    public void setPrice(int price) {
+
+    }
 }
