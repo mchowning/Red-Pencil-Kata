@@ -29,5 +29,6 @@ public class MerchandiseTest {
     @Test
     public void canUpdatePrice() {
         subject.setPrice(95);
+        assertEquals(95, subject.getPrice());
     }
 }
