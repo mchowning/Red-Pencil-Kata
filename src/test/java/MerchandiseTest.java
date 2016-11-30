@@ -31,4 +31,10 @@ public class MerchandiseTest {
         subject.setPrice(95);
         assertEquals(95, subject.getPrice());
     }
+
+    @Test
+    public void priceDropOf5PercentCreatesRedPencilPromotion() {
+        double updatedPrice = INITIAL_PRICE * 0.95;
+        subject.setPrice(updatedPrice);
+    }
 }
