@@ -11,6 +11,6 @@ public class Merchandise {
     }
 
     public boolean isRedPencilPromotion() {
-        return true;
+        return false;
     }
 }
