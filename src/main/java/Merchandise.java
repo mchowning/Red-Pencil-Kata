@@ -3,6 +3,7 @@ import java.math.BigDecimal;
 public class Merchandise {
 
     private static final Double PENCIL_PROMOTION_MIN_REDUCTION_PERCENT = 0.05;
+    private static final Double PENCIL_PROMOTION_MAX_REDUCTION_PERCENT = 0.30;
     private static final Double UNINITIALIZED_PRICE = -1.0;
 
     private double previousPrice;
@@ -27,7 +28,8 @@ public class Merchandise {
                                                            2,
                                                            BigDecimal.ROUND_HALF_UP);
             double percentReduced = BigDecimal.ONE.subtract(percentOfPrevious).doubleValue();
-            return percentReduced >= PENCIL_PROMOTION_MIN_REDUCTION_PERCENT;
+            return percentReduced >= PENCIL_PROMOTION_MIN_REDUCTION_PERCENT &&
+                    percentReduced <= PENCIL_PROMOTION_MAX_REDUCTION_PERCENT;
         }
     }
 
