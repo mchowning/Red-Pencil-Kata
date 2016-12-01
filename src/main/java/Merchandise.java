@@ -7,8 +7,8 @@ import edu.umd.cs.findbugs.annotations.Nullable;
 
 public class Merchandise {
 
-    private static final Double PENCIL_PROMOTION_MIN_REDUCTION_PERCENT = 0.05;
-    private static final Double PENCIL_PROMOTION_MAX_REDUCTION_PERCENT = 0.30;
+    private static final Double PENCIL_PROMO_MIN_REDUCTION_PERCENT = 0.05;
+    private static final Double PENCIL_PROMO_MAX_REDUCTION_PERCENT = 0.30;
     private static final int DAYS_FOR_STABLE_PRICE = 30;
     private static final int MAX_PENCIL_PROMO_DURATION_DAYS = 30;
 
@@ -23,11 +23,11 @@ public class Merchandise {
         return price.amount;
     }
 
-    public boolean isRedPencilPromotion() {
+    public boolean isRedPencilPromo() {
         if (isPreviousPriceStable()) {
             double percentReduced = getPercentPriceReduced();
-            boolean isRedPencilReductionAmount = percentReduced >= PENCIL_PROMOTION_MIN_REDUCTION_PERCENT
-                                                        && percentReduced <= PENCIL_PROMOTION_MAX_REDUCTION_PERCENT;
+            boolean isRedPencilReductionAmount = percentReduced >= PENCIL_PROMO_MIN_REDUCTION_PERCENT
+                                                   && percentReduced <= PENCIL_PROMO_MAX_REDUCTION_PERCENT;
             boolean isUnexpired = price.time.plusDays(MAX_PENCIL_PROMO_DURATION_DAYS).isAfterNow()
                                     || price.time.plusDays(MAX_PENCIL_PROMO_DURATION_DAYS).isEqualNow();
             return isRedPencilReductionAmount && isUnexpired;

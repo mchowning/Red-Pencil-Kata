@@ -26,9 +26,9 @@ public class MerchandiseTest {
     }
 
     @Test
-    public void initializedPriceIsNotRedPencilPromotion() {
-        boolean isRedPencilPromotion = subject.isRedPencilPromotion();
-        assertFalse(isRedPencilPromotion);
+    public void initializedPriceIsNotRedPencilPromo() {
+        boolean isRedPencilPromo = subject.isRedPencilPromo();
+        assertFalse(isRedPencilPromo);
     }
 
     @Test
@@ -38,72 +38,72 @@ public class MerchandiseTest {
     }
 
     @Test
-    public void reSettingInitialPriceIsNotPencilPromotion() {
+    public void reSettingInitialPriceIsNotPencilPromo() {
         subject.setPrice(INITIAL_PRICE);
-        assertFalse(subject.isRedPencilPromotion());
+        assertFalse(subject.isRedPencilPromo());
     }
 
     @Test
-    public void priceDropOf4PercentIsNotRedPencilPromotionEvenIfStable() {
+    public void priceDropOf4PercentIsNotRedPencilPromoEvenIfStable() {
         initializeWithPriceDrop(0.04, true);
-        assertFalse(subject.isRedPencilPromotion());
+        assertFalse(subject.isRedPencilPromo());
     }
 
     @Test
-    public void priceDropOf5PercentIsRedPencilPromotionIfStable() {
+    public void priceDropOf5PercentIsRedPencilPromoIfStable() {
         initializeWithPriceDrop(0.05, true);
-        assertTrue(subject.isRedPencilPromotion());
+        assertTrue(subject.isRedPencilPromo());
     }
 
     @Test
-    public void priceDropOf5PercentIsNotRedPencilPromotionIfUnstable() {
+    public void priceDropOf5PercentIsNotRedPencilPromoIfUnstable() {
         initializeWithPriceDrop(0.05, false);
-        assertFalse(subject.isRedPencilPromotion());
+        assertFalse(subject.isRedPencilPromo());
     }
 
     @Test
-    public void priceDropOf30PercentIsRedPencilPromotionIfStable() {
+    public void priceDropOf30PercentIsRedPencilPromoIfStable() {
         initializeWithPriceDrop(0.30, true);
-        assertTrue(subject.isRedPencilPromotion());
+        assertTrue(subject.isRedPencilPromo());
     }
 
     @Test
-    public void priceDropOf30PercentIsNotRedPencilPromotionIfUnstable() {
+    public void priceDropOf30PercentIsNotRedPencilPromoIfUnstable() {
         initializeWithPriceDrop(0.30, false);
-        assertFalse(subject.isRedPencilPromotion());
+        assertFalse(subject.isRedPencilPromo());
     }
 
     @Test
-    public void priceDropOf31PercentIsNotRedPencilPromotionEvenIfStable() {
+    public void priceDropOf31PercentIsNotRedPencilPromoEvenIfStable() {
         initializeWithPriceDrop(0.31, true);
-        assertFalse(subject.isRedPencilPromotion());
+        assertFalse(subject.isRedPencilPromo());
     }
 
     @Test
-    public void redPencilPromotionEndsAfterMaxPromoDuration() {
-        initializeWithRedPencilPromotionThatHasRunFor(1 + MAX_RED_PENCIL_PROMO_DURATION);
-        assertFalse(subject.isRedPencilPromotion());
+    public void redPencilPromoEndsAfterMaxPromoDuration() {
+        initializeWithRedPencilPromoThatHasRunFor(1 + MAX_RED_PENCIL_PROMO_DURATION);
+        assertFalse(subject.isRedPencilPromo());
     }
 
     @Test
-    public void redPencilPromotionContinuesForMaxPromoDuration() {
-        initializeWithRedPencilPromotionThatHasRunFor(MAX_RED_PENCIL_PROMO_DURATION);
-        assertTrue(subject.isRedPencilPromotion());
+    public void redPencilPromoContinuesForMaxPromoDuration() {
+        initializeWithRedPencilPromoThatHasRunFor(MAX_RED_PENCIL_PROMO_DURATION);
+        assertTrue(subject.isRedPencilPromo());
     }
 
     /*
      * helper methods
      */
 
-    private void initializeWithRedPencilPromotionThatHasRunFor(long promotionDuration) {
+    private void initializeWithRedPencilPromoThatHasRunFor(long promoDuration) {
         setTime(0);
         subject.setPrice(100);
 
         incrementTime(MIN_PRICE_STABLE_DURATION);
         subject.setPrice(80);
-        assertTrue(subject.isRedPencilPromotion());
+        assertTrue(subject.isRedPencilPromo());
 
-        incrementTime(promotionDuration);
+        incrementTime(promoDuration);
     }
 
     private void initializeWithPriceDrop(double percentReduction, boolean isPreviousPriceStable) {
