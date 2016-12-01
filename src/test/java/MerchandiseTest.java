@@ -127,6 +127,17 @@ public class MerchandiseTest {
         assertFalse(subject.isRedPencilPromo());
     }
 
+    @Test
+    public void priceDecreaseDuringPromoThatPushesReductionBelowMaxEndsPromo() {
+        setTime(0);
+        subject.setPrice(100);
+        incrementTime(MIN_PRICE_STABLE_DURATION + 1);
+        subject.setPrice(70);
+        assertTrue(subject.isRedPencilPromo());
+        subject.setPrice(65);
+        assertFalse(subject.isRedPencilPromo());
+    }
+
     /*
      * helper methods
      */
