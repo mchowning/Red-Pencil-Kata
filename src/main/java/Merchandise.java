@@ -1,5 +1,8 @@
+import java.math.BigDecimal;
+
 public class Merchandise {
 
+    private static final Double PENCIL_PROMOTION_MIN_REDUCTION_PERCENT = 0.05;
     private static final Double UNINITIALIZED_PRICE = -1.0;
 
     private double previousPrice;
@@ -15,7 +18,17 @@ public class Merchandise {
     }
 
     public boolean isRedPencilPromotion() {
-        return previousPrice != UNINITIALIZED_PRICE && previousPrice != price;
+        if (previousPrice == UNINITIALIZED_PRICE) {
+            return false;
+        } else {
+            BigDecimal bigPreviousPrice = BigDecimal.valueOf(previousPrice);
+            BigDecimal bigPrice = BigDecimal.valueOf(price);
+            BigDecimal percentOfPrevious = bigPrice.divide(bigPreviousPrice,
+                                                           2,
+                                                           BigDecimal.ROUND_HALF_UP);
+            double percentReduced = BigDecimal.ONE.subtract(percentOfPrevious).doubleValue();
+            return percentReduced >= PENCIL_PROMOTION_MIN_REDUCTION_PERCENT;
+        }
     }
 
     public void setPrice(double newPrice) {
