@@ -66,6 +66,12 @@ public class MerchandiseTest {
     }
 
     @Test
+    public void priceDropOf30PercentIsNotRedPencilPromotionIfUnstable() {
+        setPriceDrop(0.30, false);
+        assertFalse(subject.isRedPencilPromotion());
+    }
+
+    @Test
     public void priceDropOf31PercentIsNotRedPencilPromotionEvenIfStable() {
         setPriceDrop(0.31, true);
         assertFalse(subject.isRedPencilPromotion());
