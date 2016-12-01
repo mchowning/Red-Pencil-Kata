@@ -3,6 +3,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class MerchandiseTest {
 
@@ -34,8 +35,9 @@ public class MerchandiseTest {
     }
 
     @Test
-    public void priceDropOf5PercentCreatesRedPencilPromotion() {
+    public void priceDropOf5PercentIsRedPencilPromotion() {
         double updatedPrice = INITIAL_PRICE * 0.95;
         subject.setPrice(updatedPrice);
+        assertTrue(subject.isRedPencilPromotion());
     }
 }
