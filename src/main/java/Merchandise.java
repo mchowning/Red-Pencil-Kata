@@ -15,7 +15,7 @@ public class Merchandise {
     }
 
     public boolean isRedPencilPromotion() {
-        return previousPrice != UNINITIALIZED_PRICE;
+        return previousPrice != UNINITIALIZED_PRICE && previousPrice != price;
     }
 
     public void setPrice(double newPrice) {
