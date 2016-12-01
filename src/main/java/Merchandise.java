@@ -40,8 +40,12 @@ public class Merchandise {
     @Nullable
     private DateTime getRedPencilPromoExpiration(double newPrice, DateTime now) {
         DateTime redPencilPromoExpiration = null;
-        if (price != null && isCurrentPriceStableAsOf(price.time, now) && isRedPencilPromoPriceChange(price.amount, newPrice)) {
-            redPencilPromoExpiration = now.plusDays(MAX_PENCIL_PROMO_DURATION_DAYS);
+        if (price != null) {
+            if (price.redPencilPromoExpiration != null) {
+                redPencilPromoExpiration = price.redPencilPromoExpiration;
+            } else if (isCurrentPriceStableAsOf(price.time, now) && isRedPencilPromoPriceChange(price.amount, newPrice)) {
+                redPencilPromoExpiration = now.plusDays(MAX_PENCIL_PROMO_DURATION_DAYS);
+            }
         }
         return redPencilPromoExpiration;
     }
