@@ -77,6 +77,18 @@ public class MerchandiseTest {
         assertFalse(subject.isRedPencilPromotion());
     }
 
+    @Test
+    public void redPencilPromotionEndsAfter30Days() {
+        DateTimeUtils.setCurrentMillisFixed(0);
+        subject.setPrice(100);
+        DateTimeUtils.setCurrentMillisFixed(THIRTY_DAYS);
+        double newPrice = 100 * (1.0 - 0.20);
+        subject.setPrice(newPrice);
+        assertTrue(subject.isRedPencilPromotion());
+        DateTimeUtils.setCurrentMillisFixed(1 + (THIRTY_DAYS * 2));
+        assertFalse(subject.isRedPencilPromotion());
+    }
+
     /*
      * helper methods
      */
