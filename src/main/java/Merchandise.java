@@ -23,12 +23,11 @@ public class Merchandise {
     }
 
     public boolean isRedPencilPromo() {
-        if (price.redPencilPromoExpiration != null) {
-            boolean isUnexpired = price.redPencilPromoExpiration.isAfterNow()
-                    || price.redPencilPromoExpiration.isEqualNow();
-            return isUnexpired;
-        }
-        return false;
+        return price.redPencilPromoExpiration != null && isUnexpired(price.redPencilPromoExpiration);
+    }
+
+    private boolean isUnexpired(DateTime date) {
+        return date.isAfterNow() || date.isEqualNow();
     }
 
     public void setPrice(double newPrice) {
@@ -41,7 +40,7 @@ public class Merchandise {
     private DateTime getRedPencilPromoExpiration(double newPrice, DateTime now) {
         DateTime redPencilPromoExpiration = null;
         if (price != null) {
-            if (price.redPencilPromoExpiration != null) {
+            if (price.redPencilPromoExpiration != null && isUnexpired(price.redPencilPromoExpiration)) {
                 redPencilPromoExpiration = price.redPencilPromoExpiration;
             } else if (isCurrentPriceStableAsOf(price.time, now) && isRedPencilPromoPriceChange(price.amount, newPrice)) {
                 redPencilPromoExpiration = now.plusDays(MAX_PENCIL_PROMO_DURATION_DAYS);
