@@ -81,31 +81,29 @@ public class MerchandiseTest {
 
     @Test
     public void redPencilPromotionEndsAfterMaxPromoDuration() {
-        DateTimeUtils.setCurrentMillisFixed(0);
-        subject.setPrice(100);
-        DateTimeUtils.setCurrentMillisFixed(MIN_PRICE_STABLE_DURATION);
-        double newPrice = 100 * (1.0 - 0.20);
-        subject.setPrice(newPrice);
-        assertTrue(subject.isRedPencilPromotion());
-        DateTimeUtils.setCurrentMillisFixed(1 + MIN_PRICE_STABLE_DURATION + MAX_RED_PENCIL_PROMO_DURATION);
+        setRedPencilPromotionThatHasRunFor(1 + MAX_RED_PENCIL_PROMO_DURATION);
         assertFalse(subject.isRedPencilPromotion());
     }
 
     @Test
     public void redPencilPromotionContinuesForMaxPromoDuration() {
-        DateTimeUtils.setCurrentMillisFixed(0);
-        subject.setPrice(100);
-        DateTimeUtils.setCurrentMillisFixed(MIN_PRICE_STABLE_DURATION);
-        double newPrice = 100 * (1.0 - 0.20);
-        subject.setPrice(newPrice);
-        assertTrue(subject.isRedPencilPromotion());
-        DateTimeUtils.setCurrentMillisFixed(MIN_PRICE_STABLE_DURATION + MAX_RED_PENCIL_PROMO_DURATION);
+        setRedPencilPromotionThatHasRunFor(MAX_RED_PENCIL_PROMO_DURATION);
         assertTrue(subject.isRedPencilPromotion());
     }
 
     /*
      * helper methods
      */
+
+    private void setRedPencilPromotionThatHasRunFor(long numMillis) {
+        DateTimeUtils.setCurrentMillisFixed(0);
+        subject.setPrice(100);
+        DateTimeUtils.setCurrentMillisFixed(MIN_PRICE_STABLE_DURATION);
+        double newPrice = 100 * (1.0 - 0.20);
+        subject.setPrice(newPrice);
+        assertTrue(subject.isRedPencilPromotion());
+        DateTimeUtils.setCurrentMillisFixed(MIN_PRICE_STABLE_DURATION + numMillis);
+    }
 
     private void setPriceDrop(double percentReduction, boolean isPreviousPriceStable) {
         DateTimeUtils.setCurrentMillisFixed(0);
