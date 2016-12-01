@@ -10,6 +10,7 @@ public class Merchandise {
     private static final Double PENCIL_PROMOTION_MIN_REDUCTION_PERCENT = 0.05;
     private static final Double PENCIL_PROMOTION_MAX_REDUCTION_PERCENT = 0.30;
     private static final int DAYS_FOR_STABLE_PRICE = 30;
+    private static final int MAX_PENCIL_PROMO_DURATION_DAYS = 30;
 
     @Nullable private Price previousPrice;
     private Price price;
@@ -26,7 +27,8 @@ public class Merchandise {
         if (isPreviousPriceStable()) {
             double percentReduced = getPercentPriceReduced();
             return percentReduced >= PENCIL_PROMOTION_MIN_REDUCTION_PERCENT &&
-                    percentReduced <= PENCIL_PROMOTION_MAX_REDUCTION_PERCENT;
+                    percentReduced <= PENCIL_PROMOTION_MAX_REDUCTION_PERCENT &&
+                    price.time.plusDays(MAX_PENCIL_PROMO_DURATION_DAYS).isAfterNow();
         }
         return false;
     }
