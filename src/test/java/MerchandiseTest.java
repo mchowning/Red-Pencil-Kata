@@ -91,6 +91,14 @@ public class MerchandiseTest {
         assertTrue(subject.isRedPencilPromo());
     }
 
+    @Test
+    public void withinRangePriceReductionDuringRedPencilPromoDoesNotExtendPromo() {
+        initializeWithRedPencilPromoThatHasRunFor(MAX_RED_PENCIL_PROMO_DURATION);
+        subject.setPrice(75);
+        incrementTime(1);
+        assertFalse(subject.isRedPencilPromo());
+    }
+
     /*
      * helper methods
      */
