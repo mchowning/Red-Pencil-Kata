@@ -39,7 +39,7 @@ public class Merchandise {
     @Nullable
     private DateTime getRedPencilPromoExpiration(double newPrice, DateTime now) {
         DateTime redPencilPromoExpiration = null;
-        if (price != null) {
+        if (price != null && price.amount >= newPrice) {
             if (price.redPencilPromoExpiration != null && isUnexpired(price.redPencilPromoExpiration)) {
                 redPencilPromoExpiration = price.redPencilPromoExpiration;
             } else if (isCurrentPriceStableAsOf(price.time, now) && isRedPencilPromoPriceChange(price.amount, newPrice)) {
