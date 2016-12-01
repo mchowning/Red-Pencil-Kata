@@ -1,9 +1,13 @@
 public class Merchandise {
 
+    private static final Double UNINITIALIZED_PRICE = -1.0;
+
+    private double previousPrice;
     private double price;
 
     public Merchandise(double price) {
         this.price = price;
+        this.previousPrice = UNINITIALIZED_PRICE;
     }
 
     public double getPrice() {
@@ -11,10 +15,11 @@ public class Merchandise {
     }
 
     public boolean isRedPencilPromotion() {
-        return false;
+        return previousPrice != UNINITIALIZED_PRICE;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setPrice(double newPrice) {
+        previousPrice = price;
+        price = newPrice;
     }
 }
