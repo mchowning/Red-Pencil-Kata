@@ -25,9 +25,7 @@ public class Merchandise {
     }
 
     public boolean isRedPencilPromotion() {
-        if (previousPrice == UNINITIALIZED_PRICE ||
-                previousPriceTime == null ||
-                previousPriceTime.plusDays(DAYS_FOR_STABLE_PRICE).isAfter(priceTime.toInstant())) {
+        if (previousPrice == UNINITIALIZED_PRICE || !isPreviousPriceStable()) {
             return false;
         } else {
             double percentReduced = getPercentPriceReduced();
@@ -43,6 +41,12 @@ public class Merchandise {
                                                        2,
                                                        BigDecimal.ROUND_HALF_UP);
         return BigDecimal.ONE.subtract(percentOfPrevious).doubleValue();
+    }
+
+    private boolean isPreviousPriceStable() {
+        return previousPriceTime != null &&
+                !previousPriceTime.plusDays(DAYS_FOR_STABLE_PRICE)
+                                  .isAfter(priceTime.toInstant());
     }
 
     public void setPrice(double newPrice) {
