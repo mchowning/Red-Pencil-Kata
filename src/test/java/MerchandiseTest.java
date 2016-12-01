@@ -119,6 +119,14 @@ public class MerchandiseTest {
         assertTrue(subject.isRedPencilPromo());
     }
 
+    @Test
+    public void priceIncreaseStopsPromo() {
+        double promoPrice = initializeWithRedPencilPromoThatHasRunFor(0);
+        assertTrue(subject.isRedPencilPromo());
+        subject.setPrice(promoPrice + 0.1);
+        assertFalse(subject.isRedPencilPromo());
+    }
+
     /*
      * helper methods
      */
