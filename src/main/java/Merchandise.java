@@ -23,7 +23,7 @@ public class Merchandise {
     }
 
     public boolean isRedPencilPromo() {
-        return price.redPencilPromoExpiration != null && isUnexpired(price.redPencilPromoExpiration);
+        return price.redPencilPromo != null && isUnexpired(price.redPencilPromo.expiration);
     }
 
     private boolean isUnexpired(DateTime date) {
@@ -32,21 +32,26 @@ public class Merchandise {
 
     public void setPrice(double newPrice) {
         DateTime now = DateTime.now();
-        DateTime redPencilPromoExpiration = getRedPencilPromoExpiration(newPrice, now);
-        price = new Price(newPrice, now, redPencilPromoExpiration);
+        RedPencilPromo redPencilPromo = getRedPencilPromo(newPrice, now);
+        price = new Price(newPrice, now, redPencilPromo);
     }
 
     @Nullable
-    private DateTime getRedPencilPromoExpiration(double newPrice, DateTime now) {
-        DateTime redPencilPromoExpiration = null;
+    private RedPencilPromo getRedPencilPromo(double newPrice, DateTime now) {
+        RedPencilPromo redPencilPromo = null;
         if (price != null && price.amount >= newPrice) {
-            if (price.redPencilPromoExpiration != null && isUnexpired(price.redPencilPromoExpiration)) {
-                redPencilPromoExpiration = price.redPencilPromoExpiration;
+            if (price.redPencilPromo != null) {
+                double percentReduced = getPercentPriceReduced(price.redPencilPromo.prePromoPrice, newPrice);
+                if (percentReduced > PENCIL_PROMO_MAX_REDUCTION_PERCENT) {
+                    return null;
+                } else if (price.redPencilPromo.expiration != null && isUnexpired(price.redPencilPromo.expiration)) {
+                    redPencilPromo = new RedPencilPromo(price.redPencilPromo.prePromoPrice, price.redPencilPromo.expiration);
+                }
             } else if (isCurrentPriceStableAsOf(price.time, now) && isRedPencilPromoPriceChange(price.amount, newPrice)) {
-                redPencilPromoExpiration = now.plusDays(MAX_PENCIL_PROMO_DURATION_DAYS);
+                redPencilPromo = new RedPencilPromo(price.amount, now.plusDays(MAX_PENCIL_PROMO_DURATION_DAYS));
             }
         }
-        return redPencilPromoExpiration;
+        return redPencilPromo;
     }
 
     private boolean isCurrentPriceStableAsOf(DateTime currentPriceStartTime, DateTime time) {
@@ -64,8 +69,8 @@ public class Merchandise {
         BigDecimal bigCurrentPrice = BigDecimal.valueOf(originalPriceAmount);
         BigDecimal bigNewPrice = BigDecimal.valueOf(newPriceAmount);
         BigDecimal percentOfCurrent = bigNewPrice.divide(bigCurrentPrice,
-                                                          2,
-                                                          BigDecimal.ROUND_HALF_UP);
+                                                         2,
+                                                         BigDecimal.ROUND_HALF_UP);
         return BigDecimal.ONE.subtract(percentOfCurrent).doubleValue();
     }
 
@@ -73,12 +78,24 @@ public class Merchandise {
 
         private final double amount;
         @NonNull private final DateTime time;
-        @Nullable private final DateTime redPencilPromoExpiration;
+        @Nullable private final RedPencilPromo redPencilPromo;
 
-        private Price(double amount, @NonNull DateTime priceDate, @Nullable DateTime redPencilPromoExpiration) {
+        private Price(double amount, @NonNull DateTime priceDate, @Nullable RedPencilPromo redPencilPromo) {
             this.amount = amount;
             this.time = priceDate;
-            this.redPencilPromoExpiration = redPencilPromoExpiration;
+            this.redPencilPromo = redPencilPromo;
+        }
+
+    }
+
+    private static class RedPencilPromo {
+
+        private final double prePromoPrice;
+        private final DateTime expiration;
+
+        private RedPencilPromo(double prePromoPrice, DateTime expiration) {
+            this.prePromoPrice = prePromoPrice;
+            this.expiration = expiration;
         }
     }
 }
