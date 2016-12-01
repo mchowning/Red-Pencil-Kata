@@ -10,6 +10,8 @@ public class MerchandiseTest {
     private static final double INITIAL_PRICE = 100;
     private static final double DOUBLE_TEST_DELTA = 0.001;
     private static final long THIRTY_DAYS = Days.days(30).toStandardDuration().getMillis();
+    private static final long MIN_PRICE_STABLE_DURATION = THIRTY_DAYS;
+    private static final long MAX_RED_PENCIL_PROMO_DURATION = THIRTY_DAYS;
 
     private Merchandise subject;
 
@@ -78,26 +80,26 @@ public class MerchandiseTest {
     }
 
     @Test
-    public void redPencilPromotionEndsAfter30Days() {
+    public void redPencilPromotionEndsAfterMaxPromoDuration() {
         DateTimeUtils.setCurrentMillisFixed(0);
         subject.setPrice(100);
-        DateTimeUtils.setCurrentMillisFixed(THIRTY_DAYS);
+        DateTimeUtils.setCurrentMillisFixed(MIN_PRICE_STABLE_DURATION);
         double newPrice = 100 * (1.0 - 0.20);
         subject.setPrice(newPrice);
         assertTrue(subject.isRedPencilPromotion());
-        DateTimeUtils.setCurrentMillisFixed(1 + (THIRTY_DAYS * 2));
+        DateTimeUtils.setCurrentMillisFixed(1 + MIN_PRICE_STABLE_DURATION + MAX_RED_PENCIL_PROMO_DURATION);
         assertFalse(subject.isRedPencilPromotion());
     }
 
     @Test
-    public void redPencilPromotionContinuesFor30Days() {
+    public void redPencilPromotionContinuesForMaxPromoDuration() {
         DateTimeUtils.setCurrentMillisFixed(0);
         subject.setPrice(100);
-        DateTimeUtils.setCurrentMillisFixed(THIRTY_DAYS);
+        DateTimeUtils.setCurrentMillisFixed(MIN_PRICE_STABLE_DURATION);
         double newPrice = 100 * (1.0 - 0.20);
         subject.setPrice(newPrice);
         assertTrue(subject.isRedPencilPromotion());
-        DateTimeUtils.setCurrentMillisFixed(THIRTY_DAYS * 2);
+        DateTimeUtils.setCurrentMillisFixed(MIN_PRICE_STABLE_DURATION + MAX_RED_PENCIL_PROMO_DURATION);
         assertTrue(subject.isRedPencilPromotion());
     }
 
@@ -108,9 +110,8 @@ public class MerchandiseTest {
     private void setPriceDrop(double percentReduction, boolean isPreviousPriceStable) {
         DateTimeUtils.setCurrentMillisFixed(0);
         subject.setPrice(100);
-        long lengthOfPriceStability = isPreviousPriceStable ?
-                                          THIRTY_DAYS :
-                                          THIRTY_DAYS - 1;
+        long lengthOfPriceStability = isPreviousPriceStable ? MIN_PRICE_STABLE_DURATION :
+                                      MIN_PRICE_STABLE_DURATION - 1;
         DateTimeUtils.setCurrentMillisFixed(lengthOfPriceStability);
         double newPrice = 100 * (1.0 - percentReduction);
         subject.setPrice(newPrice);
