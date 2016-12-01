@@ -35,6 +35,12 @@ public class MerchandiseTest {
     }
 
     @Test
+    public void reSettingInitialPriceIsNotPencilPromotion() {
+        subject.setPrice(INITIAL_PRICE);
+        assertFalse(subject.isRedPencilPromotion());
+    }
+
+    @Test
     public void priceDropOf5PercentIsRedPencilPromotion() {
         double updatedPrice = INITIAL_PRICE * 0.95;
         subject.setPrice(updatedPrice);
