@@ -2,41 +2,38 @@ import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
+
 public class Merchandise {
 
     private static final Double PENCIL_PROMOTION_MIN_REDUCTION_PERCENT = 0.05;
     private static final Double PENCIL_PROMOTION_MAX_REDUCTION_PERCENT = 0.30;
     private static final int DAYS_FOR_STABLE_PRICE = 30;
-    private static final Double UNINITIALIZED_PRICE = -1.0;
 
-    private double previousPrice;
-    private DateTime previousPriceTime;
-    private double price;
-    private DateTime priceTime;
+    @Nullable private Price previousPrice;
+    private Price price;
 
     public Merchandise(double price) {
-        this.price = price;
-        this.priceTime = DateTime.now();
-        this.previousPrice = UNINITIALIZED_PRICE;
+        this.price = new Price(price);
     }
 
     public double getPrice() {
-        return price;
+        return price.amount;
     }
 
     public boolean isRedPencilPromotion() {
-        if (previousPrice == UNINITIALIZED_PRICE || !isPreviousPriceStable()) {
-            return false;
-        } else {
+        if (isPreviousPriceStable()) {
             double percentReduced = getPercentPriceReduced();
             return percentReduced >= PENCIL_PROMOTION_MIN_REDUCTION_PERCENT &&
                     percentReduced <= PENCIL_PROMOTION_MAX_REDUCTION_PERCENT;
         }
+        return false;
     }
 
     private double getPercentPriceReduced() {
-        BigDecimal bigPreviousPrice = BigDecimal.valueOf(previousPrice);
-        BigDecimal bigPrice = BigDecimal.valueOf(price);
+        BigDecimal bigPreviousPrice = BigDecimal.valueOf(previousPrice.amount);
+        BigDecimal bigPrice = BigDecimal.valueOf(price.amount);
         BigDecimal percentOfPrevious = bigPrice.divide(bigPreviousPrice,
                                                        2,
                                                        BigDecimal.ROUND_HALF_UP);
@@ -44,15 +41,25 @@ public class Merchandise {
     }
 
     private boolean isPreviousPriceStable() {
-        return previousPriceTime != null &&
-                !previousPriceTime.plusDays(DAYS_FOR_STABLE_PRICE)
-                                  .isAfter(priceTime.toInstant());
+        return previousPrice != null &&
+                !previousPrice.time
+                              .plusDays(DAYS_FOR_STABLE_PRICE)
+                              .isAfter(price.time.toInstant());
     }
 
     public void setPrice(double newPrice) {
         previousPrice = price;
-        previousPriceTime = priceTime;
-        price = newPrice;
-        priceTime = DateTime.now();
+        price = new Price(newPrice);
+    }
+
+    private static class Price {
+
+        private final double amount;
+        @NonNull private final DateTime time;
+
+        private Price(double amount) {
+            this.amount = amount;
+            this.time = DateTime.now();
+        }
     }
 }
