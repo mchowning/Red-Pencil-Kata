@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 public class MerchandiseTest {
 
     private static final double INITIAL_PRICE = 100;
+    private static final double ALMOST_NOTHING = 0.1;
     private static final double DOUBLE_TEST_DELTA = 0.001;
     private static final long THIRTY_DAYS = Days.days(30).toStandardDuration().getMillis();
     private static final long MIN_PRICE_STABLE_DURATION = THIRTY_DAYS;
@@ -93,16 +94,18 @@ public class MerchandiseTest {
 
     @Test
     public void withinRangePriceReductionDuringRedPencilPromoDoesNotExtendPromo() {
-        initializeWithRedPencilPromoThatHasRunFor(MAX_RED_PENCIL_PROMO_DURATION);
-        subject.setPrice(75);
+        double promoPrice = initializeWithRedPencilPromoThatHasRunFor(MAX_RED_PENCIL_PROMO_DURATION);
+        subject.setPrice(promoPrice - ALMOST_NOTHING);
+        assertTrue(subject.isRedPencilPromo());
         incrementTime(1);
         assertFalse(subject.isRedPencilPromo());
     }
 
     @Test
     public void withinRangePriceReductionDuringRedPencilPromoDoesNotShortenPromo() {
-        initializeWithRedPencilPromoThatHasRunFor(MAX_RED_PENCIL_PROMO_DURATION - 1);
-        subject.setPrice(75);
+        double promoPrice = initializeWithRedPencilPromoThatHasRunFor(MAX_RED_PENCIL_PROMO_DURATION - 1);
+        subject.setPrice(promoPrice - ALMOST_NOTHING);
+        assertTrue(subject.isRedPencilPromo());
         incrementTime(1);
         assertTrue(subject.isRedPencilPromo());
     }
@@ -111,15 +114,17 @@ public class MerchandiseTest {
      * helper methods
      */
 
-    private void initializeWithRedPencilPromoThatHasRunFor(long promoDuration) {
+    private double initializeWithRedPencilPromoThatHasRunFor(long promoDuration) {
         setTime(0);
         subject.setPrice(100);
 
         incrementTime(MIN_PRICE_STABLE_DURATION);
-        subject.setPrice(80);
+        int promoPrice = 80;
+        subject.setPrice(promoPrice);
         assertTrue(subject.isRedPencilPromo());
 
         incrementTime(promoDuration);
+        return promoPrice;
     }
 
     private void initializeWithPriceDrop(double percentReduction, boolean isPreviousPriceStable) {
