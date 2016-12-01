@@ -26,9 +26,11 @@ public class Merchandise {
     public boolean isRedPencilPromotion() {
         if (isPreviousPriceStable()) {
             double percentReduced = getPercentPriceReduced();
-            return percentReduced >= PENCIL_PROMOTION_MIN_REDUCTION_PERCENT &&
-                    percentReduced <= PENCIL_PROMOTION_MAX_REDUCTION_PERCENT &&
-                    price.time.plusDays(MAX_PENCIL_PROMO_DURATION_DAYS).isAfterNow();
+            boolean isRedPencilReductionAmount = percentReduced >= PENCIL_PROMOTION_MIN_REDUCTION_PERCENT
+                                                        && percentReduced <= PENCIL_PROMOTION_MAX_REDUCTION_PERCENT;
+            boolean isUnexpired = price.time.plusDays(MAX_PENCIL_PROMO_DURATION_DAYS).isAfterNow()
+                                    || price.time.plusDays(MAX_PENCIL_PROMO_DURATION_DAYS).isEqualNow();
+            return isRedPencilReductionAmount && isUnexpired;
         }
         return false;
     }
