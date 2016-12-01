@@ -8,7 +8,6 @@ import static org.junit.Assert.*;
 public class MerchandiseTest {
 
     private static final double INITIAL_PRICE = 100;
-    private static final long INITIAL_MILLIS = 0;
     private static final double DOUBLE_TEST_DELTA = 0.001;
     private static final long THIRTY_DAYS = Days.days(30).toStandardDuration().getMillis();
 
@@ -16,7 +15,6 @@ public class MerchandiseTest {
 
     @Before
     public void setUp() {
-        DateTimeUtils.setCurrentMillisFixed(INITIAL_MILLIS);
         subject = new Merchandise(INITIAL_PRICE);
     }
 
@@ -44,42 +42,47 @@ public class MerchandiseTest {
     }
 
     @Test
-    public void priceDropOf4PercentIsNotRedPencilPromotionIfStable() {
-        DateTimeUtils.setCurrentMillisFixed(THIRTY_DAYS);
-        double updatedPrice = INITIAL_PRICE * 0.96;
-        subject.setPrice(updatedPrice);
+    public void priceDropOf4PercentIsNotRedPencilPromotionEvenIfStable() {
+        setPriceDrop(0.04, true);
         assertFalse(subject.isRedPencilPromotion());
     }
 
     @Test
     public void priceDropOf5PercentIsRedPencilPromotionIfStable() {
-        DateTimeUtils.setCurrentMillisFixed(THIRTY_DAYS);
-        double updatedPrice = INITIAL_PRICE * 0.95;
-        subject.setPrice(updatedPrice);
+        setPriceDrop(0.05, true);
         assertTrue(subject.isRedPencilPromotion());
     }
 
     @Test
     public void priceDropOf5PercentIsNotRedPencilPromotionIfUnstable() {
-        DateTimeUtils.setCurrentMillisFixed(THIRTY_DAYS - 1);
-        double updatedPrice = INITIAL_PRICE * 0.95;
-        subject.setPrice(updatedPrice);
+        setPriceDrop(0.05, false);
         assertFalse(subject.isRedPencilPromotion());
     }
 
     @Test
     public void priceDropOf30PercentIsRedPencilPromotionIfStable() {
-        DateTimeUtils.setCurrentMillisFixed(THIRTY_DAYS);
-        double updatedPrice = INITIAL_PRICE * 0.70;
-        subject.setPrice(updatedPrice);
+        setPriceDrop(0.30, true);
         assertTrue(subject.isRedPencilPromotion());
     }
 
     @Test
-    public void priceDropOf31PercentIsNotRedPencilPromotionIfStable() {
-        DateTimeUtils.setCurrentMillisFixed(THIRTY_DAYS);
-        double updatedPrice = INITIAL_PRICE * 0.69;
-        subject.setPrice(updatedPrice);
+    public void priceDropOf31PercentIsNotRedPencilPromotionEvenIfStable() {
+        setPriceDrop(0.31, true);
         assertFalse(subject.isRedPencilPromotion());
+    }
+
+    /*
+     * helper methods
+     */
+
+    private void setPriceDrop(double percentReduction, boolean isPreviousPriceStable) {
+        DateTimeUtils.setCurrentMillisFixed(0);
+        subject.setPrice(100);
+        long lengthOfPriceStability = isPreviousPriceStable ?
+                                          THIRTY_DAYS :
+                                          THIRTY_DAYS - 1;
+        DateTimeUtils.setCurrentMillisFixed(lengthOfPriceStability);
+        double newPrice = 100 * (1.0 - percentReduction);
+        subject.setPrice(newPrice);
     }
 }
