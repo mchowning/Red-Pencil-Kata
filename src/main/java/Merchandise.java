@@ -1,16 +1,22 @@
+import org.joda.time.DateTime;
+
 import java.math.BigDecimal;
 
 public class Merchandise {
 
     private static final Double PENCIL_PROMOTION_MIN_REDUCTION_PERCENT = 0.05;
     private static final Double PENCIL_PROMOTION_MAX_REDUCTION_PERCENT = 0.30;
+    private static final int DAYS_FOR_STABLE_PRICE = 30;
     private static final Double UNINITIALIZED_PRICE = -1.0;
 
     private double previousPrice;
+    private DateTime previousPriceTime;
     private double price;
+    private DateTime priceTime;
 
     public Merchandise(double price) {
         this.price = price;
+        this.priceTime = DateTime.now();
         this.previousPrice = UNINITIALIZED_PRICE;
     }
 
@@ -19,7 +25,9 @@ public class Merchandise {
     }
 
     public boolean isRedPencilPromotion() {
-        if (previousPrice == UNINITIALIZED_PRICE) {
+        if (previousPrice == UNINITIALIZED_PRICE ||
+                previousPriceTime == null ||
+                previousPriceTime.plusDays(DAYS_FOR_STABLE_PRICE).isAfter(priceTime.toInstant())) {
             return false;
         } else {
             double percentReduced = getPercentPriceReduced();
@@ -39,6 +47,8 @@ public class Merchandise {
 
     public void setPrice(double newPrice) {
         previousPrice = price;
+        previousPriceTime = priceTime;
         price = newPrice;
+        priceTime = DateTime.now();
     }
 }
