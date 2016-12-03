@@ -4,6 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class MerchandiseTest {
 
@@ -24,6 +26,13 @@ public class MerchandiseTest {
     @Test
     public void initializedPriceIsReturned() {
         assertEquals(INITIAL_PRICE, subject.getPrice(), DOUBLE_TEST_DELTA);
+    }
+
+    @Test
+    public void notifiesPromoCheckerOfPriceChanges() {
+        RedPencilPromoChecker promoChecker = mock(RedPencilPromoChecker.class);
+        subject = new Merchandise(INITIAL_PRICE, promoChecker);
+        verify(promoChecker).notifyOfPriceUpdate(INITIAL_PRICE);
     }
 
     @Test
