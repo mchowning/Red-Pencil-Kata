@@ -45,6 +45,14 @@ public class MerchandiseTest {
     }
 
     @Test
+    public void returnsIsNotPromoIfPromoCheckerReturnsFalse() {
+        RedPencilPromoChecker promoChecker = mock(RedPencilPromoChecker.class);
+        when(promoChecker.isPromoActive()).thenReturn(false);
+        subject = new Merchandise(INITIAL_PRICE, promoChecker);
+        assertFalse(subject.isRedPencilPromo());
+    }
+
+    @Test
     public void initializedPriceIsNotRedPencilPromo() {
         boolean isRedPencilPromo = subject.isRedPencilPromo();
         assertFalse(isRedPencilPromo);
