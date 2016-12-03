@@ -14,7 +14,7 @@ public class Merchandise {
 
     private Price price;
 
-    public Merchandise(double price) {
+    public Merchandise(double price, RedPencilPromoChecker promoChecker) {
         setPrice(price);
     }
 
