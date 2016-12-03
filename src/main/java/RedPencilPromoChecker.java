@@ -27,21 +27,24 @@ public class RedPencilPromoChecker {
     }
 
     private void updatePromoState() {
-        if (shouldStartNewPromo()) {
+        if (isPromoActive() && !shouldContinuePromo()) {
+            clearCurrentPromo();
+        } else if (shouldStartNewPromo()) {
             promoExpiration = currentPrice.startTime
                                           .plusDays(MAX_PENCIL_PROMO_DURATION_DAYS)
                                           .plusMillis(1);
             prePromoPrice = previousPrice.amount;
-        } else if (!shouldContinuePromo()) {
-            promoExpiration = null;
         }
+    }
+
+    private void clearCurrentPromo() {
+        promoExpiration = null;
     }
 
     private boolean shouldContinuePromo() {
         return currentPrice != null &&
                 previousPrice != null &&
                 currentPrice.amount <= previousPrice.amount &&
-                isPromoActive() &&
                 isRedPencilPromoPriceChange(prePromoPrice, currentPrice.amount);
     }
 
