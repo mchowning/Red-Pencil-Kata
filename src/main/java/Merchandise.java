@@ -25,9 +25,7 @@ public class Merchandise {
     }
 
     public boolean isRedPencilPromo() {
-        return price != null &&
-                price.redPencilPromo != null &&
-                price.redPencilPromo.expiration.isAfterNow();
+        return promoChecker.isPromoActive();
     }
 
     public void setPrice(double newPrice) {
