@@ -6,6 +6,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class MerchandiseTest {
 
@@ -33,6 +34,14 @@ public class MerchandiseTest {
         RedPencilPromoChecker promoChecker = mock(RedPencilPromoChecker.class);
         subject = new Merchandise(INITIAL_PRICE, promoChecker);
         verify(promoChecker).notifyOfPriceUpdate(INITIAL_PRICE);
+    }
+
+    @Test
+    public void returnsIsPromoIfPromoCheckerReturnsTrue() {
+        RedPencilPromoChecker promoChecker = mock(RedPencilPromoChecker.class);
+        when(promoChecker.isPromoActive()).thenReturn(true);
+        subject = new Merchandise(INITIAL_PRICE, promoChecker);
+        assertTrue(subject.isRedPencilPromo());
     }
 
     @Test
