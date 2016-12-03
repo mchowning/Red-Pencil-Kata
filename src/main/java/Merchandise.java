@@ -12,9 +12,11 @@ public class Merchandise {
     private static final int DAYS_FOR_STABLE_PRICE = 30;
     private static final int MAX_PENCIL_PROMO_DURATION_DAYS = 30;
 
+    private final RedPencilPromoChecker promoChecker;
     private Price price;
 
-    public Merchandise(double price, RedPencilPromoChecker promoChecker) {
+    public Merchandise(double price, @NonNull RedPencilPromoChecker promoChecker) {
+        this.promoChecker = promoChecker;
         setPrice(price);
     }
 
@@ -29,6 +31,7 @@ public class Merchandise {
     }
 
     public void setPrice(double newPrice) {
+        promoChecker.notifyOfPriceUpdate(newPrice);
         DateTime now = DateTime.now();
         RedPencilPromo redPencilPromo = getRedPencilPromo(newPrice, now);
         price = new Price(newPrice, now, redPencilPromo);
