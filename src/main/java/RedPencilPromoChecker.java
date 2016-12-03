@@ -27,13 +27,12 @@ public class RedPencilPromoChecker {
     }
 
     private void updatePromoState() {
-        if (isPromoActive() && !shouldContinuePromo()) {
-            clearCurrentPromo();
-        } else if (shouldStartNewPromo()) {
-            promoExpiration = currentPrice.startTime
-                                          .plusDays(MAX_PENCIL_PROMO_DURATION_DAYS)
-                                          .plusMillis(1);
-            prePromoPrice = previousPrice.amount;
+        if (currentPrice != null && previousPrice != null) {
+            if (isPromoActive() && !shouldContinuePromo()) {
+                clearCurrentPromo();
+            } else if (shouldStartNewPromo()) {
+                startNewPromo();
+            }
         }
     }
 
@@ -41,17 +40,20 @@ public class RedPencilPromoChecker {
         promoExpiration = null;
     }
 
+    private void startNewPromo() {
+        promoExpiration = currentPrice.startTime
+                                      .plusDays(MAX_PENCIL_PROMO_DURATION_DAYS)
+                                      .plusMillis(1);
+        prePromoPrice = previousPrice.amount;
+    }
+
     private boolean shouldContinuePromo() {
-        return currentPrice != null &&
-                previousPrice != null &&
-                currentPrice.amount <= previousPrice.amount &&
+        return currentPrice.amount <= previousPrice.amount &&
                 isRedPencilPromoPriceChange(prePromoPrice, currentPrice.amount);
     }
 
     private boolean shouldStartNewPromo() {
-        return currentPrice != null &&
-                previousPrice != null &&
-                wasPreviousPriceStable() &&
+        return wasPreviousPriceStable() &&
                 isRedPencilPromoPriceChange(previousPrice.amount, currentPrice.amount);
     }
 
