@@ -18,7 +18,7 @@ public class MerchandiseTest {
 
     @Before
     public void setUp() {
-        subject = new Merchandise(INITIAL_PRICE);
+        subject = new Merchandise(INITIAL_PRICE, new RedPencilPromoChecker());
     }
 
     @Test
