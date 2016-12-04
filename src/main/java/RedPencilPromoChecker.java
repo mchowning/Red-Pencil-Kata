@@ -11,27 +11,26 @@ public class RedPencilPromoChecker {
     private static final int DAYS_FOR_STABLE_PRICE = 30;
     private static final int MAX_PENCIL_PROMO_DURATION_DAYS = 30;
 
-    @Nullable private Price previousPrice;
-    @Nullable private Price currentPrice;
-    private double prePromoPrice;
+    @Nullable private Price storedPrice;
     @Nullable private DateTime promoExpiration;
+    private double prePromoPrice;
 
     public void notifyOfPriceUpdate(double newPriceAmount) {
-        previousPrice = currentPrice;
-        currentPrice = new Price(newPriceAmount);
-        updatePromoState();
+        Price newPrice = new Price(newPriceAmount);
+        updatePromoState(newPrice);
+        storedPrice = newPrice;
     }
 
     public boolean isPromoActive() {
         return promoExpiration != null && promoExpiration.isAfterNow();
     }
 
-    private void updatePromoState() {
-        if (currentPrice != null && previousPrice != null) {
-            if (isPromoActive() && !shouldContinuePromo()) {
+    private void updatePromoState(Price newPrice) {
+        if (storedPrice != null) {
+            if (isPromoActive() && !shouldContinuePromo(newPrice)) {
                 clearCurrentPromo();
-            } else if (shouldStartNewPromo()) {
-                startNewPromo();
+            } else if (shouldStartNewPromo(newPrice)) {
+                startNewPromo(newPrice);
             }
         }
     }
@@ -40,25 +39,25 @@ public class RedPencilPromoChecker {
         promoExpiration = null;
     }
 
-    private void startNewPromo() {
-        promoExpiration = currentPrice.startTime
-                                      .plusDays(MAX_PENCIL_PROMO_DURATION_DAYS)
-                                      .plusMillis(1);
-        prePromoPrice = previousPrice.amount;
+    private void startNewPromo(Price newPrice) {
+        promoExpiration = newPrice.startTime
+                                   .plusDays(MAX_PENCIL_PROMO_DURATION_DAYS)
+                                   .plusMillis(1);
+        prePromoPrice = storedPrice.amount;
     }
 
-    private boolean shouldContinuePromo() {
-        return currentPrice.amount <= previousPrice.amount &&
-                isRedPencilPromoPriceChange(prePromoPrice, currentPrice.amount);
+    private boolean shouldContinuePromo(Price newPrice) {
+        return newPrice.amount <= storedPrice.amount &&
+                isRedPencilPromoPriceChange(prePromoPrice, newPrice.amount);
     }
 
-    private boolean shouldStartNewPromo() {
+    private boolean shouldStartNewPromo(Price newPrice) {
         return wasPreviousPriceStable() &&
-                isRedPencilPromoPriceChange(previousPrice.amount, currentPrice.amount);
+                isRedPencilPromoPriceChange(storedPrice.amount, newPrice.amount);
     }
 
     private boolean wasPreviousPriceStable() {
-        DateTime timeForStability = previousPrice.startTime.plusDays(DAYS_FOR_STABLE_PRICE);
+        DateTime timeForStability = storedPrice.startTime.plusDays(DAYS_FOR_STABLE_PRICE);
         return timeForStability.isBeforeNow() || timeForStability.isEqualNow();
     }
 
